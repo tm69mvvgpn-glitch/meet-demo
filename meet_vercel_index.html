@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/>
+<meta name="theme-color" content="#07050d"/>
+<title>相遇 MEET · 交互演示</title>
+<style>
+:root{
+  --bg:#07050d;--panel:#11101a;--panel2:#181323;--line:#2a2138;
+  --text:#f7f5fb;--muted:#9b93a7;--purple:#8d48ff;--purple2:#b36cff;
+  --pink:#f15db8;--green:#56dfa0;--danger:#ef546e;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:#020204;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
+body{min-height:100vh}
+.app{
+  width:min(100%,430px);min-height:100vh;margin:auto;position:relative;overflow:hidden;
+  background:
+    radial-gradient(circle at 85% -5%,rgba(130,55,255,.32),transparent 30%),
+    radial-gradient(circle at -10% 22%,rgba(241,93,184,.12),transparent 25%),
+    linear-gradient(180deg,#0a0711,#050408 72%);
+}
+.screen{display:none;min-height:100vh;padding:54px 20px 108px;animation:screenIn .42s cubic-bezier(.2,.8,.2,1)}
+.screen.active{display:block}
+@keyframes screenIn{from{opacity:0;transform:translateX(18px) scale(.988)}to{opacity:1;transform:none}}
+.status{display:flex;justify-content:space-between;align-items:center;color:#81798c;font-size:11px;margin-bottom:18px}
+.brand{font-size:13px;font-weight:900;letter-spacing:2.5px;color:#d9b6ff}
+.grad{background:linear-gradient(90deg,#d49cff,#ff6bc4);-webkit-background-clip:text;color:transparent}
+h1{font-size:36px;line-height:1.12;margin:14px 0 10px;letter-spacing:-.5px}
+h2{font-size:26px;line-height:1.25;margin:12px 0 8px}
+h3{font-size:17px;margin:0 0 6px}
+p{margin:7px 0}.sub{font-size:14px;line-height:1.65;color:var(--muted)}
+.small{font-size:12px;color:var(--muted)}
+.logo{
+  width:94px;height:94px;border-radius:28px;margin:64px auto 26px;display:grid;place-items:center;
+  background:linear-gradient(145deg,#f0b2ff,#9d50ff 45%,#4a20ce);
+  font-weight:1000;font-size:45px;box-shadow:0 0 45px rgba(153,74,255,.55),0 28px 60px rgba(0,0,0,.32);
+  animation:float 3s ease-in-out infinite;
+}
+@keyframes float{50%{transform:translateY(-9px) rotate(2deg);box-shadow:0 0 80px rgba(197,84,255,.75),0 34px 70px rgba(0,0,0,.42)}}
+.btn{
+  width:100%;border:0;border-radius:18px;padding:16px;margin-top:13px;
+  background:linear-gradient(90deg,#7137ea,#a34cf3);color:white;font-size:16px;font-weight:800;
+  box-shadow:0 12px 30px rgba(113,55,234,.25);transition:.16s transform,.16s filter;
+}
+.btn:active{transform:scale(.97);filter:brightness(1.1)}
+.btn.secondary{background:#15111e;border:1px solid var(--line);box-shadow:none;color:#f1edf7}
+.btn.danger{background:var(--danger);box-shadow:none}
+.row{display:flex;gap:10px}.row>*{flex:1}
+.card{
+  background:linear-gradient(145deg,rgba(24,19,35,.96),rgba(14,12,20,.98));border:1px solid var(--line);
+  border-radius:22px;padding:17px;margin:12px 0;box-shadow:0 12px 32px rgba(0,0,0,.16)
+}
+.card.purple{background:linear-gradient(145deg,rgba(47,22,83,.92),rgba(19,13,36,.98));border-color:#4b2a75}
+.choice{
+  display:flex;align-items:center;gap:13px;padding:14px;border-radius:18px;background:#14111d;border:1px solid #2a2239;
+  margin:10px 0;transition:.24s;
+}
+.choice.selected{border-color:#a957ff;background:#211631;transform:scale(1.012);box-shadow:0 0 0 1px rgba(169,87,255,.45) inset,0 0 26px rgba(141,72,255,.12)}
+.choice .icon{width:45px;height:45px;border-radius:14px;background:#291b3d;display:grid;place-items:center;font-size:22px}
+.badge{display:inline-block;padding:7px 10px;border-radius:99px;background:#251738;color:#d4adff;font-size:11px}
+.matchStage{height:360px;display:grid;place-items:center;position:relative}
+.orb{width:184px;height:184px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#ffd9ff,#b55eff 23%,#5e24d5 50%,#18072e 72%);box-shadow:0 0 72px rgba(156,70,255,.75);display:grid;place-items:center;font-size:42px;animation:breathe 1.55s ease-in-out infinite}
+@keyframes breathe{50%{transform:scale(1.08);filter:brightness(1.16);box-shadow:0 0 118px rgba(200,90,255,.9)}}
+.ring{position:absolute;width:240px;height:240px;border:1px solid rgba(170,105,255,.38);border-radius:50%;animation:spin 2.4s linear infinite}
+.ring.r2{width:296px;height:296px;animation-duration:4s;animation-direction:reverse}
+.ring:after{content:"";position:absolute;width:10px;height:10px;border-radius:50%;background:var(--pink);top:-5px;left:50%;box-shadow:0 0 18px var(--pink)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.progress{height:4px;background:#211b2d;border-radius:5px;overflow:hidden}.progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--purple),var(--pink));transition:width .55s}
+.people{display:flex;justify-content:center;align-items:center;gap:22px;margin:34px 0}
+.avatar{width:106px;height:106px;border-radius:50%;background:linear-gradient(145deg,#5f4176,#21162d);border:3px solid #a858ff;display:grid;place-items:center;font-size:48px;box-shadow:0 0 32px rgba(141,72,255,.35);animation:pop .55s both}
+.avatar:nth-child(3){animation-delay:.18s}
+@keyframes pop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:scale(1)}}
+.heart{font-size:38px;color:#ff66b9;animation:heart .8s infinite alternate}
+@keyframes heart{to{transform:scale(1.28);filter:drop-shadow(0 0 12px #ff5cb7)}}
+.video{
+  height:390px;border-radius:27px;background:radial-gradient(circle at 50% 34%,#3b2749,#110e17 64%);
+  display:grid;place-items:center;text-align:center;margin:18px 0;position:relative;overflow:hidden;border:1px solid #281f34
+}
+.video:before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.04),transparent 68%);animation:sheen 4s linear infinite}
+@keyframes sheen{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+.face{width:148px;height:148px;border-radius:50%;margin:auto;background:rgba(214,192,229,.2);display:grid;place-items:center;font-size:61px;filter:blur(11px);animation:facePulse 2s ease-in-out infinite}
+.face.mid{filter:blur(5px)}
+.face.clear{filter:none;background:linear-gradient(145deg,#e0c0ff,#7648db);animation:reveal .75s both}
+@keyframes reveal{from{opacity:.25;filter:blur(18px);transform:scale(.88)}to{opacity:1;filter:none;transform:none}}
+@keyframes facePulse{50%{transform:scale(1.025)}}
+.wave{height:48px;display:flex;align-items:center;justify-content:center;gap:5px}
+.wave i{width:4px;background:#d66cff;border-radius:8px;animation:wave .55s infinite alternate}
+.wave i:nth-child(1){height:12px}.wave i:nth-child(2){height:30px;animation-delay:.08s}.wave i:nth-child(3){height:18px;animation-delay:.16s}.wave i:nth-child(4){height:39px;animation-delay:.24s}.wave i:nth-child(5){height:16px;animation-delay:.12s}
+@keyframes wave{to{height:7px}}
+.controls{display:flex;justify-content:center;gap:25px;margin:14px 0}
+.round{width:60px;height:60px;border-radius:50%;border:1px solid #352d44;background:#18141f;color:#fff;font-size:22px;transition:.15s}
+.round:active{transform:scale(.9)}.round.end{background:var(--danger)}
+.notice{position:fixed;z-index:30;top:18px;left:50%;transform:translate(-50%,-30px);opacity:0;pointer-events:none;background:#f8f5ff;color:#17121d;padding:11px 15px;border-radius:14px;font-size:12px;transition:.3s;max-width:360px;box-shadow:0 10px 30px rgba(0,0,0,.25)}.notice.show{opacity:1;transform:translate(-50%,0)}
+.moon{font-size:62px;text-align:center;animation:moon 2.2s ease-in-out infinite}@keyframes moon{50%{transform:translateY(-5px);filter:drop-shadow(0 0 24px #a654ff)}}
+.feedimg{height:180px;border-radius:18px;background:linear-gradient(#fb9777,#60305d);display:grid;place-items:center;font-size:62px;overflow:hidden}.feedimg span{animation:zoom 6s ease-in-out infinite alternate}@keyframes zoom{to{transform:scale(1.18)}}
+.rooms{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.seat{height:86px;border-radius:18px;background:#1d1628;border:1px solid #332445;display:grid;place-items:center;text-align:center;font-size:12px;color:#cab8d8}.seat b{font-size:30px;display:block}
+.tabs{display:flex;gap:8px;margin:16px 0}.tab{flex:1;border:1px solid #2b2439;background:#14101c;color:#938a9f;border-radius:13px;padding:10px;font-size:12px}.tab.active{background:#241638;color:#d8b6ff;border-color:#5b347d}
+.nav{position:absolute;bottom:0;left:0;right:0;height:83px;background:rgba(9,8,14,.94);border-top:1px solid #221c2d;display:flex;justify-content:space-around;padding-top:11px;backdrop-filter:blur(16px)}
+.nav button{border:0;background:none;color:#777184;font-size:10px}.nav button b{display:block;font-size:21px;margin-bottom:4px}.nav .active{color:#bd6eff}
+.switch{width:48px;height:29px;border-radius:20px;background:#6f34db;padding:3px}.switch:after{content:"";display:block;width:23px;height:23px;background:white;border-radius:50%;margin-left:19px}
+.setting{display:flex;align-items:center;justify-content:space-between}
+.timer{font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<div class="app">
+<div id="notice" class="notice"></div>
+
+<section id="s0" class="screen active">
+  <div class="status"><span>17:53</span><span>●●● 5G ▰</span></div>
+  <div class="logo">M</div>
+  <div style="text-align:center">
+    <div class="brand">MEET <span class="grad">相遇</span></div>
+    <h1>真实的人<br/>真诚地遇见</h1>
+    <p class="sub">AI 帮你直接遇见更合适的人<br/>不刷人 · 不海选 · 更高效的真实连接</p>
+  </div>
+  <button class="btn" onclick="go(1)">开始体验</button>
+  <button class="btn secondary" onclick="go(13)">查看安全机制</button>
+  <p class="small" style="text-align:center;margin-top:18px">高保真产品演示 · AI、人物与音视频均为模拟</p>
+</section>
+
+<section id="s1" class="screen">
+  <div class="status"><span class="brand">MEET</span><span class="badge">今天</span></div>
+  <h2>今天来干嘛？</h2>
+  <p class="sub">先告诉 MEET 你此刻真正想要什么，不需要浏览一排陌生人。</p>
+  <div id="choices">
+    <div class="choice selected" onclick="selectChoice(this)"><div class="icon">💗</div><div><h3>认识一下</h3><div class="small">想认识聊得来的TA</div></div></div>
+    <div class="choice" onclick="selectChoice(this)"><div class="icon">🎮</div><div><h3>游戏搭子</h3><div class="small">一起开黑，有话题再认识</div></div></div>
+    <div class="choice" onclick="selectChoice(this)"><div class="icon">✈️</div><div><h3>旅行搭子</h3><div class="small">同路线、同节奏、同兴趣</div></div></div>
+    <div class="choice" onclick="selectChoice(this)"><div class="icon">🎵</div><div><h3>兴趣同好</h3><div class="small">音乐、电影、摄影、运动</div></div></div>
+    <div class="choice" onclick="selectChoice(this)"><div class="icon">❤️</div><div><h3>想遇见喜欢的人</h3><div class="small">先有感觉，再决定关系</div></div></div>
+  </div>
+  <button class="btn" onclick="startMatch()">AI 帮我找</button>
+</section>
+
+<section id="s2" class="screen">
+  <div class="brand grad">AI MATCHING</div>
+  <h2>正在寻找更可能聊得来的人…</h2>
+  <div class="matchStage"><div class="ring"></div><div class="ring r2"></div><div class="orb">✦</div></div>
+  <div class="progress"><span id="progress"></span></div>
+  <p id="matchText" class="sub" style="text-align:center">理解你今天的意图</p>
+  <div class="card"><b>本次匹配参考</b><p class="small">当下需求 · 兴趣标签 · 互动偏好 · 历史连接结果</p></div>
+</section>
+
+<section id="s3" class="screen">
+  <div class="status"><span class="brand">匹配成功</span><span class="badge">92% 同频</span></div>
+  <h2>你们可能会聊得来</h2>
+  <p class="sub">从声音开始，而不是从照片开始。</p>
+  <div class="people"><div class="avatar">👩🏻</div><div class="heart">♥</div><div class="avatar">👨🏻</div></div>
+  <div class="card purple"><b>共同点</b><p class="small">旅行 · 电影 · 摄影<br/>都偏好先聊天，再决定要不要继续认识</p></div>
+  <button class="btn" onclick="go(4)">开始相遇</button>
+  <button class="btn secondary" onclick="go(1)">换一个目的</button>
+</section>
+
+<section id="s4" class="screen">
+  <div class="status"><span class="brand">先听见</span><span class="badge">语音连接中</span></div>
+  <div class="video"><div><div class="face">☺</div><h2>TA 还没有完全出现</h2><div class="wave"><i></i><i></i><i></i><i></i><i></i></div><div class="small">00:<span id="sec">12</span> · 声音先于长相</div></div></div>
+  <div class="controls"><button class="round" onclick="toast('麦克风已静音')">🎙</button><button class="round end" onclick="go(7)">☎</button><button class="round" onclick="toast('扬声器已切换')">🔊</button></div>
+  <button class="btn" onclick="go(5)">我想再看见一点</button>
+</section>
+
+<section id="s5" class="screen">
+  <div class="status"><span class="brand">渐进式了解</span><span class="badge">轮廓</span></div>
+  <div class="video"><div><div class="face mid">☺</div><h2>轮廓正在变清晰</h2><p class="sub">完整露脸不是默认行为。</p></div></div>
+  <div class="row"><button class="btn secondary" onclick="toast('继续保持轮廓模式')">继续聊</button><button class="btn" onclick="go(6)">愿意露脸</button></div>
+</section>
+
+<section id="s6" class="screen">
+  <div class="status"><span class="brand grad">双方确认</span><span class="badge">真实看见</span></div>
+  <div class="video"><div><div class="face clear">☺</div><h2>你们看见彼此了</h2><p class="small">Demo用人物占位符模拟完整视频画面</p></div></div>
+  <div class="controls"><button class="round">🎙</button><button class="round end" onclick="go(7)">☎</button><button class="round">📷</button></div>
+  <button class="btn" onclick="go(7)">结束相遇并选择</button>
+</section>
+
+<section id="s7" class="screen">
+  <div class="brand grad">MUTUAL LIKE</div><h2>还想继续认识 TA 吗？</h2>
+  <p class="sub">只有双方都愿意，关系才会留下。</p>
+  <div class="people"><div class="avatar">👩🏻</div><div class="heart">♥</div><div class="avatar">👨🏻</div></div>
+  <div class="row"><button class="btn secondary" onclick="go(8)">到这里就好</button><button class="btn" onclick="mutual()">继续认识</button></div>
+</section>
+
+<section id="s8" class="screen">
+  <div class="status"><span class="brand">MEET</span><span class="badge">今晚</span></div>
+  <h2>继续认识，或者再遇见</h2>
+  <div class="card purple"><div class="moon">🌙</div><h3>留在今晚</h3><p class="sub">不用一直在线。留下今晚的意图，MEET继续寻找；找到更合适的人后再召回你。</p><button class="btn" onclick="stayTonight()">留在今晚</button></div>
+  <div class="card"><h3>⚡ 此刻</h3><p class="small">分享此刻的生活和需求，从共同话题发现人。</p><button class="btn secondary" onclick="go(9)">看看此刻</button></div>
+  <div class="card"><h3>🎙 语音主题厅</h3><p class="small">不想马上1对1，也可以先围绕共同兴趣一起聊。</p><button class="btn secondary" onclick="go(10)">进入主题厅</button></div>
+  <div class="card purple"><h3>✦ Creator 特别相遇</h3><p class="small">明确身份的创作者制造内容和事件；没有遇到Creator的人仍会继续彼此匹配。</p><button class="btn secondary" onclick="go(11)">查看Creator</button></div>
+  <div class="nav"><button class="active"><b>✦</b>相遇</button><button onclick="go(9)"><b>⚡</b>此刻</button><button onclick="go(12)"><b>◌</b>消息</button><button onclick="go(14)"><b>☺</b>我的</button></div>
+</section>
+
+<section id="s9" class="screen">
+  <div class="status"><span class="brand">此刻 · NOW</span><span class="badge">推荐</span></div>
+  <h2>从正在发生的事发现人</h2>
+  <div class="card"><b>小鹿鹿 · 刚刚</b><p>此刻的夕阳 🌅<br/>有人也喜欢看日落吗？</p><div class="feedimg"><span>🌅</span></div><p class="small">♡ 128　💬 36</p><button class="btn secondary" onclick="toast('已发起「认识一下」')">认识一下</button></div>
+  <div class="card"><b>Miles · 3分钟前</b><p>周末徒步太治愈了 🏕️</p><button class="btn secondary" onclick="toast('已发起「认识一下」')">认识一下</button></div>
+  <button class="btn secondary" onclick="go(8)">返回首页</button>
+</section>
+
+<section id="s10" class="screen">
+  <div class="status"><span class="brand">旅行分享会</span><span class="badge">28人在线</span></div>
+  <h2>多人语音，轻松认识人</h2>
+  <div class="tabs"><button class="tab active">旅行</button><button class="tab">游戏</button><button class="tab">音乐</button></div>
+  <div class="rooms">
+    <div class="seat"><div><b>👩🏻</b>主持人</div></div><div class="seat"><div><b>👩🏻</b>小鹿鹿</div></div><div class="seat"><div><b>👨🏻</b>KK</div></div>
+    <div class="seat"><div><b>👩🏻</b>May</div></div><div class="seat"><div><b>👨🏻</b>Echo</div></div><div class="seat"><div><b>＋</b>空位</div></div>
+  </div>
+  <div class="card purple" style="text-align:center"><div class="wave"><i></i><i></i><i></i><i></i><i></i></div><b>“你最想再去一次的城市？”</b></div>
+  <button class="btn" onclick="toast('已申请上麦 · 等待主持人确认')">申请上麦</button>
+  <button class="btn secondary" onclick="go(8)">离开主题厅</button>
+</section>
+
+<section id="s11" class="screen">
+  <div class="status"><span class="brand grad">CREATOR</span><span class="badge">已认证</span></div>
+  <div style="text-align:center"><div class="avatar" style="margin:18px auto">👩🏻</div><h2>小鹿鹿 ✓</h2><p class="small">旅行Creator · 12.6万粉丝</p></div>
+  <div class="card purple"><h3>今晚 22:00 · 特别相遇</h3><p class="sub">创作者身份明确。用户可预约参与限时相遇；没有匹配到Creator的人，MEET仍会继续把兴趣相近的人连接给彼此。</p><button class="btn" onclick="toast('预约成功 ✓')">预约今晚</button></div>
+  <div class="card"><b>Creator能力</b><p class="small">身份标识 · 专属主题厅 · 预约相遇 · 内容分发 · 活动工具 · 数据面板</p></div>
+  <button class="btn secondary" onclick="go(8)">返回首页</button>
+</section>
+
+<section id="s12" class="screen">
+  <div class="status"><span class="brand">消息</span><span class="badge">3</span></div>
+  <h2>继续认识的人</h2>
+  <div class="card"><div class="row" style="align-items:center"><div style="flex:0 0 48px" class="avatar">👩🏻</div><div><b>小鹿鹿</b><div class="small">刚刚：下次再聊旅行呀～</div></div></div><button class="btn secondary" onclick="toast('聊天窗口为Demo模拟')">打开聊天</button></div>
+  <div class="card"><b>MEET系统消息</b><p class="small">昨晚有人遇见了你。去看看TA为什么想认识你。</p><button class="btn secondary" onclick="toast('已打开「留在今晚」召回结果')">查看</button></div>
+  <button class="btn secondary" onclick="go(8)">返回首页</button>
+</section>
+
+<section id="s13" class="screen">
+  <div class="brand grad">TRUST & SAFETY</div><h2>真实相遇，从安全开始</h2>
+  <div class="card"><div class="setting"><div><b>🛡 真人认证</b><div class="small">减少虚假身份</div></div><div class="badge">开启</div></div></div>
+  <div class="card"><div class="setting"><div><b>🔒 隐私保护</b><div class="small">敏感信息最小化</div></div><div class="switch"></div></div></div>
+  <div class="card"><div class="setting"><div><b>🚩 举报 / 拉黑</b><div class="small">任何核心场景随时可触达</div></div><div class="badge">快速处理</div></div></div>
+  <div class="card"><div class="setting"><div><b>💠 AI风险识别</b><div class="small">骚扰、营销、异常行为辅助识别</div></div><div class="switch"></div></div></div>
+  <button class="btn" onclick="go(1)">开始体验</button>
+</section>
+
+<section id="s14" class="screen">
+  <div style="text-align:center"><div class="avatar" style="margin:15px auto">☺</div><h2>我的 MEET</h2><p class="small">Demo体验账号</p></div>
+  <div class="card"><b>我的兴趣</b><p class="sub">旅行 · 摄影 · 电影 · 游戏</p></div>
+  <div class="card"><b>AI正在学习什么</b><p class="sub">你更容易和有共同经历、聊天节奏自然的人继续认识。</p></div>
+  <div class="card"><b>关系记录</b><p class="sub">相遇 8次 · 双向继续 3次 · 留在今晚 2次</p></div>
+  <button class="btn" onclick="go(1)">重新演示核心流程</button>
+  <button class="btn secondary" onclick="go(8)">返回首页</button>
+</section>
+
+</div>
+<script>
+let current=0,timerId=null;
+function go(n){
+  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active'); current=n; window.scrollTo(0,0);
+  if(n===4)startTimer(); else clearInterval(timerId);
+}
+function selectChoice(el){document.querySelectorAll('.choice').forEach(x=>x.classList.remove('selected'));el.classList.add('selected')}
+function toast(msg){const n=document.getElementById('notice');n.textContent=msg;n.classList.add('show');setTimeout(()=>n.classList.remove('show'),1800)}
+function startMatch(){
+  go(2);
+  const items=[['理解你今天的意图',18],['分析共同兴趣',38],['参考互动偏好',58],['学习历史连接结果',78],['找到一个更可能聊得来的人 ✓',100]];
+  let i=0;const txt=document.getElementById('matchText'),bar=document.getElementById('progress');
+  bar.style.width='0%';
+  const id=setInterval(()=>{txt.textContent=items[i][0];bar.style.width=items[i][1]+'%';i++;if(i===items.length){clearInterval(id);setTimeout(()=>go(3),650)}},700)
+}
+function startTimer(){let s=12;document.getElementById('sec').textContent=s;timerId=setInterval(()=>{s++;document.getElementById('sec').textContent=s<10?'0'+s:s},1000)}
+function mutual(){toast('对方也选择了继续认识 ♥');setTimeout(()=>go(8),1000)}
+function stayTonight(){toast('已留在今晚 🌙');setTimeout(()=>toast('找到更合适的人后，MEET会召回你'),1900)}
+</script>
+</body></html>
