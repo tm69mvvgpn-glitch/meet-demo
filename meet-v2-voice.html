@@ -1,0 +1,1017 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>相遇 MEET · V2 + 语音厅</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  background:#020204;
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  overflow:hidden;
+}
+
+#meetV2{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+  border:0;
+  background:#020204;
+}
+
+/* 语音厅入口 */
+
+.voice-entry{
+  position:fixed;
+  right:max(14px,calc((100vw - 430px)/2 + 14px));
+  bottom:100px;
+  z-index:30;
+
+  border:1px solid rgba(190,132,255,.6);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(55,27,87,.98),
+      rgba(19,12,30,.98)
+    );
+
+  color:#fff;
+
+  border-radius:999px;
+
+  padding:12px 16px;
+
+  font-size:13px;
+  font-weight:800;
+
+  box-shadow:
+    0 10px 32px rgba(118,59,220,.42);
+
+  animation:voiceFloat 2.7s ease-in-out infinite;
+}
+
+@keyframes voiceFloat{
+  50%{
+    transform:translateY(-6px);
+  }
+}
+
+/* 语音厅页面 */
+
+.voice-overlay{
+  display:none;
+
+  position:fixed;
+  inset:0;
+
+  z-index:50;
+
+  background:#020204;
+}
+
+.voice-overlay.show{
+  display:block;
+}
+
+.voice-page{
+
+  width:min(100%,430px);
+
+  height:100%;
+
+  margin:auto;
+
+  overflow:auto;
+
+  color:#f7f5fb;
+
+  background:
+
+    radial-gradient(
+      circle at 82% -5%,
+      rgba(130,55,255,.36),
+      transparent 30%
+    ),
+
+    radial-gradient(
+      circle at -10% 25%,
+      rgba(241,93,184,.13),
+      transparent 26%
+    ),
+
+    linear-gradient(
+      180deg,
+      #0a0711,
+      #050408 72%
+    );
+
+  padding:
+    52px
+    20px
+    120px;
+}
+
+.voice-top{
+
+  display:flex;
+
+  justify-content:space-between;
+  align-items:center;
+
+  margin-bottom:22px;
+}
+
+.brand{
+
+  color:#d9b6ff;
+
+  font-size:13px;
+
+  letter-spacing:2px;
+
+  font-weight:900;
+}
+
+.close-btn{
+
+  width:36px;
+  height:36px;
+
+  border:none;
+
+  border-radius:50%;
+
+  background:#17121f;
+
+  color:white;
+
+  font-size:19px;
+}
+
+h1{
+
+  font-size:31px;
+
+  line-height:1.17;
+
+  margin:
+    12px
+    0;
+}
+
+h2{
+
+  font-size:22px;
+
+  margin:
+    10px
+    0;
+}
+
+h3{
+
+  font-size:16px;
+}
+
+.sub{
+
+  color:#9b93a7;
+
+  font-size:13px;
+
+  line-height:1.65;
+}
+
+.small{
+
+  color:#9b93a7;
+
+  font-size:11px;
+
+  line-height:1.5;
+}
+
+.badge{
+
+  display:inline-block;
+
+  padding:
+    7px
+    10px;
+
+  border-radius:99px;
+
+  background:#251738;
+
+  color:#d4adff;
+
+  font-size:11px;
+}
+
+.badge.green{
+
+  background:#143a31;
+
+  color:#81ebc1;
+}
+
+.card{
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(24,19,35,.96),
+      rgba(14,12,20,.98)
+    );
+
+  border:
+    1px
+    solid
+    #2a2138;
+
+  border-radius:22px;
+
+  padding:17px;
+
+  margin:
+    14px
+    0;
+}
+
+.card.purple{
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(47,22,83,.94),
+      rgba(19,13,36,.98)
+    );
+
+  border-color:#4b2a75;
+}
+
+/* 人物 */
+
+.people{
+
+  display:flex;
+
+  justify-content:center;
+
+  gap:10px;
+
+  margin:
+    22px
+    0;
+}
+
+.avatar{
+
+  width:52px;
+  height:52px;
+
+  border-radius:50%;
+
+  display:grid;
+
+  place-items:center;
+
+  background:
+    linear-gradient(
+      145deg,
+      #604178,
+      #21162d
+    );
+
+  border:
+    2px
+    solid
+    #a858ff;
+
+  font-size:24px;
+
+  position:relative;
+}
+
+.avatar.speaking::after{
+
+  content:"";
+
+  position:absolute;
+
+  inset:-6px;
+
+  border-radius:50%;
+
+  border:
+    1px
+    solid
+    #bd6eff;
+
+  animation:
+    speakerPulse
+    1.2s
+    infinite;
+}
+
+@keyframes speakerPulse{
+
+  50%{
+
+    transform:scale(1.1);
+
+    opacity:.35;
+  }
+}
+
+/* 声音动画 */
+
+.wave{
+
+  height:50px;
+
+  display:flex;
+
+  justify-content:center;
+  align-items:center;
+
+  gap:5px;
+}
+
+.wave i{
+
+  width:4px;
+
+  background:#d66cff;
+
+  border-radius:8px;
+
+  animation:
+    wave
+    .55s
+    infinite
+    alternate;
+}
+
+.wave i:nth-child(1){height:12px}
+
+.wave i:nth-child(2){
+  height:31px;
+  animation-delay:.08s;
+}
+
+.wave i:nth-child(3){
+  height:19px;
+  animation-delay:.16s;
+}
+
+.wave i:nth-child(4){
+  height:40px;
+  animation-delay:.24s;
+}
+
+.wave i:nth-child(5){
+  height:17px;
+  animation-delay:.12s;
+}
+
+@keyframes wave{
+
+  to{
+    height:7px;
+  }
+}
+
+/* 按钮 */
+
+.btn{
+
+  width:100%;
+
+  border:none;
+
+  border-radius:18px;
+
+  padding:16px;
+
+  margin-top:12px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #7137ea,
+      #a34cf3
+    );
+
+  color:#fff;
+
+  font-size:15px;
+
+  font-weight:800;
+}
+
+.btn.secondary{
+
+  background:#15111e;
+
+  border:
+    1px
+    solid
+    #2a2138;
+}
+
+/* 共鸣用户 */
+
+.member{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:12px;
+
+  padding:
+    13px
+    0;
+
+  border-bottom:
+    1px
+    solid
+    #272030;
+}
+
+.member:last-child{
+
+  border-bottom:none;
+}
+
+.mini-avatar{
+
+  width:43px;
+  height:43px;
+
+  border-radius:50%;
+
+  display:grid;
+
+  place-items:center;
+
+  background:#291b3d;
+
+  border:
+    1px
+    solid
+    #58307d;
+
+  font-size:20px;
+}
+
+.member-info{
+
+  flex:1;
+}
+
+.know-btn{
+
+  border:
+    1px
+    solid
+    #4a3260;
+
+  background:#1c1426;
+
+  color:#d9bdff;
+
+  border-radius:12px;
+
+  padding:
+    9px
+    11px;
+
+  font-size:11px;
+}
+
+.note{
+
+  padding:12px;
+
+  margin-top:15px;
+
+  border-radius:15px;
+
+  background:#15111d;
+
+  border:
+    1px
+    solid
+    #2a2138;
+
+  color:#bdb0ca;
+
+  font-size:11px;
+
+  line-height:1.6;
+}
+
+/* 提示 */
+
+.toast{
+
+  position:fixed;
+
+  top:18px;
+  left:50%;
+
+  z-index:80;
+
+  transform:
+    translate(
+      -50%,
+      -30px
+    );
+
+  opacity:0;
+
+  transition:.25s;
+
+  background:#f8f5ff;
+
+  color:#17121d;
+
+  padding:
+    11px
+    15px;
+
+  border-radius:14px;
+
+  font-size:12px;
+
+  pointer-events:none;
+}
+
+.toast.show{
+
+  opacity:1;
+
+  transform:
+    translate(
+      -50%,
+      0
+    );
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- 原来的V2完整Demo -->
+
+<iframe
+  id="meetV2"
+  src="meet-v2.html">
+</iframe>
+
+
+<!-- 新增语音厅按钮 -->
+
+<button
+  class="voice-entry"
+  onclick="openVoice()">
+
+  🎙 语音厅
+
+</button>
+
+
+<div
+  id="toast"
+  class="toast">
+</div>
+
+
+<!-- 语音厅 -->
+
+<div
+  id="voiceRoom"
+  class="voice-overlay">
+
+<div class="voice-page">
+
+
+<div class="voice-top">
+
+<span class="brand">
+MEET · 语音厅
+</span>
+
+<button
+  class="close-btn"
+  onclick="closeVoice()">
+
+×
+</button>
+
+</div>
+
+
+<span class="badge">
+
+低压力多人连接
+
+</span>
+
+
+<h1>
+
+先听，
+再参与，<br>
+
+再决定认识谁
+
+</h1>
+
+
+<p class="sub">
+
+不想立刻进入1V1？
+
+先进入一个有明确主题的小型语音房。
+
+这里不是传统语音直播间，
+
+而是让用户在低压力环境中，
+先发现真正有共鸣的人。
+
+</p>
+
+
+<div class="card purple">
+
+
+<span class="badge green">
+
+正在进行
+
+</span>
+
+
+<h2>
+
+如果可以在一个城市
+生活一个月
+
+</h2>
+
+
+<p class="small">
+
+旅行 · 慢热友好 ·
+6人小房间 · 官方主持
+
+</p>
+
+
+<div class="people">
+
+
+<div class="avatar speaking">
+👩🏻
+</div>
+
+
+<div class="avatar">
+👨🏻
+</div>
+
+
+<div class="avatar">
+👩🏻
+</div>
+
+
+<div class="avatar">
+👨🏻
+</div>
+
+
+<div class="avatar">
+👩🏻
+</div>
+
+
+</div>
+
+
+<div class="wave">
+
+<i></i>
+<i></i>
+<i></i>
+<i></i>
+<i></i>
+
+</div>
+
+
+<p
+class="small"
+style="text-align:center">
+
+Mia 正在说：
+
+“我最想去京都住一个月，
+因为可以每天散步和拍照。”
+
+</p>
+
+
+</div>
+
+
+<button
+id="micButton"
+class="btn"
+onclick="joinMic()">
+
+申请上麦参与
+
+</button>
+
+
+<button
+class="btn secondary"
+onclick="showToast('你可以继续安静地听，不需要立刻参与')">
+
+继续只听
+
+</button>
+
+
+<div
+id="afterMic"
+class="card"
+style="display:none">
+
+
+<span class="badge green">
+
+你已上麦
+
+</span>
+
+
+<h3>
+
+刚才和你有共鸣的人
+
+</h3>
+
+
+<div class="member">
+
+<div class="mini-avatar">
+👩🏻
+</div>
+
+<div class="member-info">
+
+<b>Mia</b>
+
+<div class="small">
+
+京都旅行 ·
+城市摄影 ·
+慢热
+
+</div>
+
+</div>
+
+<button
+class="know-btn"
+onclick="knowPerson(this,'Mia')">
+
+认识一下
+
+</button>
+
+</div>
+
+
+<div class="member">
+
+<div class="mini-avatar">
+👨🏻
+</div>
+
+<div class="member-info">
+
+<b>Echo</b>
+
+<div class="small">
+
+日本旅行 ·
+电影 ·
+徒步
+
+</div>
+
+</div>
+
+<button
+class="know-btn"
+onclick="knowPerson(this,'Echo')">
+
+认识一下
+
+</button>
+
+</div>
+
+
+<div class="note">
+
+点击“认识一下”
+只是向对方发送连接意图。
+
+只有对方也愿意，
+
+MEET 才把你们带入
+1V1继续认识。
+
+<br><br>
+
+语音厅不做：
+
+礼物、PK、公会、
+主播榜、财富榜、
+无限挂厅。
+
+</div>
+
+
+</div>
+
+
+<div class="card">
+
+<h3>
+
+为什么MEET需要语音厅？
+
+</h3>
+
+<p class="small">
+
+AI 1V1适合：
+
+“我现在就想认识一个人”。
+
+<br><br>
+
+语音厅适合：
+
+“我不想立刻1V1，
+想先听听其他人在聊什么”。
+
+<br><br>
+
+最终两条路径都回到同一个目标：
+
+<strong style="color:#e7d5ff">
+
+形成值得继续的真实关系。
+
+</strong>
+
+</p>
+
+</div>
+
+
+<button
+class="btn secondary"
+onclick="closeVoice()">
+
+返回 MEET
+
+</button>
+
+
+</div>
+</div>
+
+
+<script>
+
+function openVoice(){
+
+  document
+  .getElementById("voiceRoom")
+  .classList
+  .add("show");
+
+}
+
+
+function closeVoice(){
+
+  document
+  .getElementById("voiceRoom")
+  .classList
+  .remove("show");
+
+}
+
+
+function joinMic(){
+
+  document
+  .getElementById("micButton")
+  .textContent =
+  "🎙 已上麦";
+
+
+  document
+  .getElementById("afterMic")
+  .style
+  .display =
+  "block";
+
+
+  showToast(
+    "已加入讨论，现在可以自然参与话题"
+  );
+
+}
+
+
+function knowPerson(button,name){
+
+  button.textContent =
+  "已发送";
+
+
+  button.disabled =
+  true;
+
+
+  showToast(
+
+    "已向 " +
+    name +
+    " 发送「认识一下」"
+
+  );
+
+}
+
+
+function showToast(message){
+
+  const toast =
+    document
+    .getElementById("toast");
+
+
+  toast.textContent =
+    message;
+
+
+  toast
+  .classList
+  .add("show");
+
+
+  clearTimeout(
+    toast.timer
+  );
+
+
+  toast.timer =
+    setTimeout(
+      () =>
+      toast
+      .classList
+      .remove("show"),
+      1800
+    );
+
+}
+
+</script>
+
+</body>
+</html>
